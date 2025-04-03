@@ -8,13 +8,37 @@ class ServicioTipoVehiculoBorrar {
     protected static async borrar(tiposVehiculo: TipoVehiculo, res: Response): Promise<any> {
         await pool
         .task(async(consulta) => {
-            return pool.result(SQL_TIPO_VEHICULO.DELETE, [tiposVehiculo.codTipoVehiculo]);
+            let caso = 1;
+            let respuesta = null;
+            const tipoVehiculoRev = await consulta.one(
+                SQL_TIPO_VEHICULO.COUNT_TV_USADOS,
+                [tiposVehiculo.codTipoVehiculo]
+            );
+            const tipoVehiculoExiste = await consulta.oneOrNone(
+                SQL_TIPO_VEHICULO.FIND_BY_ID,
+                [tiposVehiculo.codTipoVehiculo]
+            );
+
+            if(tipoVehiculoExiste && tipoVehiculoRev.cantidad == 0 && tipoVehiculoRev) {
+                caso = 2;
+                respuesta = await consulta.result(SQL_TIPO_VEHICULO.DELETE, [tiposVehiculo.codTipoVehiculo]);
+            }
+
+            return {caso, respuesta};
         })
-        .then((respuesta) => {
-            res.status(200).json({
-                respuesta: "Tipo de vehículo borrado exitosamente",
-                "Filas afectadas": respuesta.rowCount
-            });
+        .then(({caso, respuesta}) => {
+            if(caso == 2 && respuesta) {
+                res.status(200).json({
+                    respuesta: "Tipo de vehículo borrado exitosamente",
+                    "Filas afectadas": respuesta.rowCount
+                });
+            }
+            else {
+                res.status(400).json({
+                    error: "No se puede eliminar el tipo de vehiculo"
+                });
+            }
+            
         })
         .catch((miError) => {
             console.log("Error al borrar el tipo de vehículo: ", miError);

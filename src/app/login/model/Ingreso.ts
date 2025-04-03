@@ -45,4 +45,4 @@ class Ingreso {
 
 }
 
-export default Ingreso;
+export default Ingreso;

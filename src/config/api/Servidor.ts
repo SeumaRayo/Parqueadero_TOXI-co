@@ -7,6 +7,7 @@ import rutaTipoVehiculoApi from "../../app/tipo-vehiculo/route/RutaTipoVehiculo"
 import rutaUbicacionApi from "../../app/ubicacion/route/RutaUbicacion";
 import rutaParqueaderoApi from "../../app/parqueadero/route/RutaParqueadero";
 import rutaPuestoApi from "../../app/puesto/route/RutaPuesto";
+import rutaLoginApi from "../../app/login/route/RutaLogin";
 
 dotenv.config();
 
@@ -23,11 +24,16 @@ class Servidor {
         this.app.use(express.json({limit: "100Mb"}));
         this.app.use(express.urlencoded({extended: true}));
 
+        //Login 
+        this.app.use("/api/login", rutaLoginApi);
+
         this.app.use("/api/rol", rutaRolApi);
         this.app.use("/api/tipo-vehiculo", rutaTipoVehiculoApi);
         this.app.use("/api/ubicacion", rutaUbicacionApi);
         this.app.use("/api/parqueadero", rutaParqueaderoApi);
         this.app.use("/api/puesto", rutaPuestoApi);
+
+
     }
 
     public start(): void {
