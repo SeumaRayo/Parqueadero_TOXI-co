@@ -18,7 +18,6 @@ class ServicioSignIn {
             if(accesoRev && accesoRev.claveAcceso === acceso.claveAcceso){
                 caso = 2;
                 
-
                 const fechaActual = new Date();
                 const isoString = fechaActual.toISOString(); // '2024-04-01T14:30:00.000Z'
 
