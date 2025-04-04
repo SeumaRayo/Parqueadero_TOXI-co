@@ -19,5 +19,9 @@ export const SQL_TIPO_VEHICULO = {
 
     UPDATE: "UPDATE tipos_vehiculos \
     SET clase_tipo_vehiculo = $1 \
-    WHERE cod_tipo_vehiculo = $2"
+    WHERE cod_tipo_vehiculo = $2",
+
+    COUNT_TV_USADOS: "SELECT count(cod_puesto) as cantidad \
+    FROM puestos as p \
+    where cod_tipo_vehiculo = $1"
 };

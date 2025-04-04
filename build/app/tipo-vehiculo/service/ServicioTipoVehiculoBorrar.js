@@ -19,13 +19,28 @@ class ServicioTipoVehiculoBorrar {
         return __awaiter(this, void 0, void 0, function* () {
             yield dbConnection_1.default
                 .task((consulta) => __awaiter(this, void 0, void 0, function* () {
-                return dbConnection_1.default.result(sql_tipoVehiculo_1.SQL_TIPO_VEHICULO.DELETE, [tiposVehiculo.codTipoVehiculo]);
+                let caso = 1;
+                let respuesta = null;
+                const tipoVehiculoRev = yield consulta.one(sql_tipoVehiculo_1.SQL_TIPO_VEHICULO.COUNT_TV_USADOS, [tiposVehiculo.codTipoVehiculo]);
+                const tipoVehiculoExiste = yield consulta.oneOrNone(sql_tipoVehiculo_1.SQL_TIPO_VEHICULO.FIND_BY_ID, [tiposVehiculo.codTipoVehiculo]);
+                if (tipoVehiculoExiste && tipoVehiculoRev.cantidad == 0 && tipoVehiculoRev) {
+                    caso = 2;
+                    respuesta = yield consulta.result(sql_tipoVehiculo_1.SQL_TIPO_VEHICULO.DELETE, [tiposVehiculo.codTipoVehiculo]);
+                }
+                return { caso, respuesta };
             }))
-                .then((respuesta) => {
-                res.status(200).json({
-                    respuesta: "Tipo de vehículo borrado exitosamente",
-                    "Filas afectadas": respuesta.rowCount
-                });
+                .then(({ caso, respuesta }) => {
+                if (caso == 2 && respuesta) {
+                    res.status(200).json({
+                        respuesta: "Tipo de vehículo borrado exitosamente",
+                        "Filas afectadas": respuesta.rowCount
+                    });
+                }
+                else {
+                    res.status(400).json({
+                        error: "No se puede eliminar el tipo de vehiculo"
+                    });
+                }
             })
                 .catch((miError) => {
                 console.log("Error al borrar el tipo de vehículo: ", miError);

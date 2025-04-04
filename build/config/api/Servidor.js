@@ -12,6 +12,7 @@ const RutaTipoVehiculo_1 = __importDefault(require("../../app/tipo-vehiculo/rout
 const RutaUbicacion_1 = __importDefault(require("../../app/ubicacion/route/RutaUbicacion"));
 const RutaParqueadero_1 = __importDefault(require("../../app/parqueadero/route/RutaParqueadero"));
 const RutaPuesto_1 = __importDefault(require("../../app/puesto/route/RutaPuesto"));
+const RutaLogin_1 = __importDefault(require("../../app/login/route/RutaLogin"));
 dotenv_1.default.config();
 class Servidor {
     constructor() {
@@ -21,6 +22,8 @@ class Servidor {
         this.app.use((0, morgan_1.default)("dev"));
         this.app.use(express_1.default.json({ limit: "100Mb" }));
         this.app.use(express_1.default.urlencoded({ extended: true }));
+        //Login 
+        this.app.use("/api/login", RutaLogin_1.default);
         this.app.use("/api/rol", RutaRol_1.default);
         this.app.use("/api/tipo-vehiculo", RutaTipoVehiculo_1.default);
         this.app.use("/api/ubicacion", RutaUbicacion_1.default);
